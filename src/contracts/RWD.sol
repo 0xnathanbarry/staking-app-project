@@ -1,8 +1,8 @@
 pragma solidity >=0.5.0 <0.9.0;
 
-contract MikeCoin {
-    string public name = 'MikeCoin';
-    string public symbol = 'MKC';
+contract RWD {
+    string public name = 'Reward Token';
+    string public symbol = 'RWD';
     uint256 public totalSupply = 1_000_000_000000000000000000;
     uint8 public decimals = 18;
 
