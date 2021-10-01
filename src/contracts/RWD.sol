@@ -3,7 +3,7 @@ pragma solidity >=0.5.0 <0.9.0;
 contract RWD {
     string public name = 'Reward Token';
     string public symbol = 'RWD';
-    uint256 public totalSupply = 1_000_000_000000000000000000;
+    uint256 public totalSupply = 1000000000000000000000000;
     uint8 public decimals = 18;
 
     event Transfer(address indexed _from, address indexed _to, uint _value);
