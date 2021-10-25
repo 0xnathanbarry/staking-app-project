@@ -18,13 +18,14 @@ contract DecentralBank {
     constructor(RWD _rwd, MikeCoin _mikecoin) public {
         rwd = _rwd;
         mikecoin = _mikecoin;
+        owner = msg.sender;
     }
 
     function depositTokens(uint256 _amount) public {
         // Require staking amount to be greater than 0
         require(_amount > 0, "amount cannot be 0");
 
-        // Transfer tether tokens to this contract address for staking
+        // Transfer mikecoin tokens to this contract address for staking
         mikecoin.transferFrom(msg.sender, address(this), _amount);
 
         // Update Staking Balance
@@ -37,5 +38,35 @@ contract DecentralBank {
         // Update Staking Status
         isStaking[msg.sender] = true;
         hasStaked[msg.sender] = true;
+    }
+
+    // Issue Rewards
+    function issueTokens() public {
+        // require the owner to issue tokens
+        require(msg.sender == owner, "caller must be owner");
+
+        for (uint256 i = 0; i < stakers.length; i++) {
+            address recipient = stakers[i];
+            uint256 balance = stakingBalance[recipient] / 9;
+            if (balance > 0) {
+                rwd.transfer(recipient, balance);
+            }
+        }
+    }
+
+    // unstake tokens
+    function unstakeTokens() public {
+        uint256 balance = stakingBalance[msg.sender];
+        // require amount to be greater than zero
+        require(balance > 0, "staking balance can't be less than zero");
+
+        // transfer the tokens to the specified contract address from our bank
+        mikecoin.transfer(msg.sender, balance);
+
+        // reset staking balance
+        stakingBalance[msg.sender] = 0;
+
+        // Update Staking balance
+        isStaking[msg.sender] = false;
     }
 }

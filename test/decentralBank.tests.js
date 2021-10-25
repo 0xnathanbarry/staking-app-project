@@ -64,6 +64,69 @@ contract("DecentralBank", ([owner, customer]) => {
         tokens("100"),
         "customer mock wallet balance before staking"
       );
+
+      // Check staking for customer
+      await mikecoin.approve(decentralBank.address, tokens("100"), {
+        from: customer,
+      });
+      await decentralBank.depositTokens(tokens("100"), { from: customer });
+
+      // check updated balance of customer
+      result = await mikecoin.balanceOf(customer);
+      assert.equal(
+        result.toString(),
+        tokens("0"),
+        "customer mock wallet balance after staking"
+      );
+
+      // check updated balance of bank
+      result = await mikecoin.balanceOf(decentralBank.address);
+      assert.equal(
+        result.toString(),
+        tokens("100"),
+        "decentral bank wallet balance after staking from customer"
+      );
+
+      // Is Staking
+      result = await decentralBank.isStaking(customer);
+      assert.equal(
+        result.toString(),
+        "true",
+        "customer staking status after staking"
+      );
+
+      // Issue Tokens
+      await decentralBank.issueTokens({ from: owner });
+
+      // Unsure only the owner can issue tokens
+      await decentralBank.issueTokens({ from: customer }).should.be.rejected;
+
+      // Unstake Tokens
+      await decentralBank.unstakeTokens({ from: customer });
+
+      // Check unstaking balances
+      result = await mikecoin.balanceOf(customer);
+      assert.equal(
+        result.toString(),
+        tokens("100"),
+        "customer mock wallet balance after unstaking"
+      );
+
+      // check updated balance of bank
+      result = await mikecoin.balanceOf(decentralBank.address);
+      assert.equal(
+        result.toString(),
+        tokens("0"),
+        "decentral bank wallet balance after unstaking from customer"
+      );
+
+      // Is Staking
+      result = await decentralBank.isStaking(customer);
+      assert.equal(
+        result.toString(),
+        "false",
+        "customer staking status after unstaking"
+      );
     });
   });
 });
