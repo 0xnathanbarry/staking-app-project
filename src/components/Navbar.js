@@ -16,6 +16,7 @@ const Navbar = ({ account }) => {
           width="50"
           height="30"
           className="d-inline-block align-top"
+          alt="bank"
         />
         DAPP Yield Staking (Decentralized Banking)
       </a>
