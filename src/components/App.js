@@ -28,30 +28,32 @@ const App = () => {
   const loadBlockchainData = async () => {
     const web3 = window.web3;
     const account = await web3.eth.getAccounts();
-    setState({ ...state, account: account });
-    console.log(account);
-    console.log(state.account);
+    setState({ account: account[0] });
     const networkId = await web3.eth.net.getId();
-    console.log(networkId);
 
     // Load MikeCoin Contract
-    const mikecoinData = MikeCoin.networks[5777];
-    if (mikecoinData) {
-      const mikecoin = new web3.eth.Contract(
-        MikeCoin.abi,
-        mikecoinData.address
-      );
-      setState({ ...state, mikecoin: mikecoin });
-      let mikecoinBalance = await mikecoin.methods
-        .balanceOf(state.account)
-        .call();
-      setState({ ...state, mikecoinBalance: mikecoinBalance.toString() });
-      console.log(state.mikecoinBalance);
-    } else {
-      window.alert(
-        "Error! MikeCoin contract not deployed - no detected network!"
-      );
-    }
+    const func = async () => {
+      await console.log(state);
+      const mikecoinData = MikeCoin.networks[networkId];
+      if (mikecoinData) {
+        const mikecoin = new web3.eth.Contract(
+          MikeCoin.abi,
+          mikecoinData.address
+        );
+        await setState({ mikecoin: mikecoin });
+        let mikecoinBalance = await mikecoin.methods
+          .balanceOf(state.account)
+          .call();
+        await setState({ mikecoinBalance: mikecoinBalance.toString() });
+        console.log(state.mikecoinBalance);
+      } else {
+        window.alert(
+          "Error! MikeCoin contract not deployed - no detected network!"
+        );
+      }
+    };
+
+    func();
   };
 
   const [state, setState] = useState({
